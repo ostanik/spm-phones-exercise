@@ -14,14 +14,14 @@ public struct Phone: Parseable {
 }
 
 private extension String {
-    private enum Constants {
+    enum Constants {
         static let invalidePrefix = ["+ ", " ", "+0", "0 "]
         static let emptySpace = " "
         static let minLenght = 3
         static let range = 7...12
     }
 
-    private enum AreaIdentifier: String {
+    enum AreaIdentifier: String {
         case plus = "+"
         case zero = "00"
     }
@@ -37,18 +37,17 @@ private extension String {
         return Int(self.remove(.plus).removeSpaces()) != nil
     }
 
-    var validLenght: Bool {
+    var validLength: Bool {
         let string = self.remove(.plus).removeSpaces()
         guard string.count != Constants.minLenght else { return true }
         return string.remove(.zero).lenght(in: Constants.range)
     }
 
     var valid: Bool {
-        return self.validPrefix && self.onlyNumbers && self.validLenght
+        return self.validPrefix && self.onlyNumbers && self.validLength
     }
 
     // MARK: Utility
-
     func parsed() -> String? {
         guard self.valid else { return nil }
         let string = self.remove(.plus).trimmingCharacters(in: .whitespacesAndNewlines)
@@ -56,20 +55,20 @@ private extension String {
         return string.remove(.zero)
     }
 
-    private func remove(prefix: String) -> String {
+    func remove(prefix: String) -> String {
         guard self.hasPrefix(prefix) else { return self }
         return String(self.dropFirst(prefix.count))
     }
 
-    private func remove(_ identifier: AreaIdentifier) -> String {
+    func remove(_ identifier: AreaIdentifier) -> String {
         return self.remove(prefix: identifier.rawValue)
     }
 
-    private func removeSpaces() -> String {
+    func removeSpaces() -> String {
         return self.replacingOccurrences(of: " ", with: "")
     }
 
-    private func lenght(in range: ClosedRange<Int>) -> Bool {
+    func lenght(in range: ClosedRange<Int>) -> Bool {
         return self.count >= range.lowerBound && self.count <= range.upperBound
     }
 }
